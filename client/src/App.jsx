@@ -1,19 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 
-// API Base URL for the Express Backend Server
 const API_BASE_URL = 'http://localhost:5000/api/orders';
 
 export default function App() {
-  // ============================================================================
-  // 1. STATE MANAGEMENT
-  // ============================================================================
-  // Active Screen: 'form' | 'preview'
   const [currentScreen, setCurrentScreen] = useState('form');
-
-  // Backend connection status
   const [serverOnline, setServerOnline] = useState(null);
 
-  // Form State: Personal Information
   const [personalInfo, setPersonalInfo] = useState({
     fullName: '',
     email: '',
@@ -24,21 +16,16 @@ export default function App() {
     notes: '',
   });
 
-  // Form State: Purchased Items (Dynamic List)
   const [items, setItems] = useState([
     { id: 1, name: 'MacBook Air M3', price: '1099.00', quantity: 1 },
     { id: 2, name: 'Wireless Bluetooth Mouse', price: '29.99', quantity: 2 },
   ]);
 
-  // UI States
   const [isLoading, setIsLoading] = useState(false);
-  const [notification, setNotification] = useState(null); // { message, type: 'error' | 'success' }
-  const [previewData, setPreviewData] = useState(null); // Data calculated by backend API
-  const [confirmedOrder, setConfirmedOrder] = useState(null); // Modal state
+  const [notification, setNotification] = useState(null);
+  const [previewData, setPreviewData] = useState(null);
+  const [confirmedOrder, setConfirmedOrder] = useState(null);
 
-  // ============================================================================
-  // 2. CHECK SERVER CONNECTIVITY ON MOUNT
-  // ============================================================================
   useEffect(() => {
     async function checkServer() {
       try {
@@ -55,9 +42,6 @@ export default function App() {
     checkServer();
   }, []);
 
-  // ============================================================================
-  // 3. LIVE ESTIMATED TOTALS (Frontend Calculation)
-  // ============================================================================
   const liveSummary = useMemo(() => {
     let totalQuantity = 0;
     let subtotal = 0;
@@ -75,9 +59,6 @@ export default function App() {
     };
   }, [items]);
 
-  // ============================================================================
-  // 4. DYNAMIC ITEMS TABLE HANDLERS
-  // ============================================================================
   const handleAddItem = () => {
     setItems((prev) => [
       ...prev,
@@ -109,9 +90,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ============================================================================
-  // 5. AUTOFILL DEMO DATA (For quick classroom demonstrations)
-  // ============================================================================
   const handleAutofill = () => {
     setPersonalInfo({
       fullName: 'Abdul Rafay',
@@ -145,15 +123,10 @@ export default function App() {
     setPreviewData(null);
   };
 
-  // ============================================================================
-  // 6. CORE CLIENT-SERVER COMMUNICATION FUNCTION (15% Course Marks)
-  // ============================================================================
   const handleFormSubmit = async (e) => {
-    // Step A: Prevent browser page reload
     e.preventDefault();
     setNotification(null);
 
-    // Step B: Validate required personal details
     if (
       !personalInfo.fullName.trim() ||
       !personalInfo.email.trim() ||
@@ -164,7 +137,6 @@ export default function App() {
       return;
     }
 
-    // Step C: Validate item rows
     const formattedItems = [];
     for (const item of items) {
       const name = item.name.trim();
@@ -178,7 +150,6 @@ export default function App() {
       formattedItems.push({ name, price, quantity });
     }
 
-    // Step D: Construct the payload
     const payload = {
       personalInfo,
       items: formattedItems,
@@ -187,7 +158,6 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      // Step E: Send HTTP POST Request via fetch() to Express Backend
       const response = await fetch(`${API_BASE_URL}/preview`, {
         method: 'POST',
         headers: {
@@ -196,14 +166,12 @@ export default function App() {
         body: JSON.stringify(payload),
       });
 
-      // Step F: Parse server JSON response
       const result = await response.json();
 
       if (!response.ok || !result.success) {
         throw new Error(result.message || 'Server returned an error calculating order.');
       }
 
-      // Step G: Save calculated preview object and switch to Screen 2
       setPreviewData(result.data);
       setCurrentScreen('preview');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -215,9 +183,6 @@ export default function App() {
     }
   };
 
-  // ============================================================================
-  // 7. CONFIRM ORDER API SUBMISSION
-  // ============================================================================
   const handleConfirmFinalOrder = async () => {
     if (!previewData) return;
 
@@ -236,7 +201,6 @@ export default function App() {
         throw new Error(result.message || 'Failed to finalize order on server.');
       }
 
-      // Display Confirmation Modal
       setConfirmedOrder(result.data);
 
     } catch (err) {
@@ -244,35 +208,30 @@ export default function App() {
     }
   };
 
-  // ============================================================================
-  // 8. RENDER VIEW
-  // ============================================================================
   return (
     <div className="app-container">
-      {/* Application Header */}
       <header className="app-header">
         <div className="header-content">
           <div className="logo-area">
-            <div className="logo-badge">⚛️</div>
+            <div className="logo-badge">⚡</div>
             <div>
-              <h1>Order & Billing Portal (React)</h1>
-              <p className="subtitle">Client (React + Vite) communicating with Express Server API</p>
+              <h1>Order & Billing Portal</h1>
+              <p className="subtitle">Client-Server Order Management System</p>
             </div>
           </div>
           {serverOnline !== null && (
             <div
               className={`status-indicator ${serverOnline ? 'online' : 'offline'}`}
-              title="Live Backend Connection Status"
+              title="Backend Connection Status"
             >
               <span className="status-dot"></span>
-              <span>{serverOnline ? 'Server Online (Port 5000)' : 'Server Offline (Port 5000)'}</span>
+              <span>{serverOnline ? 'Server Online' : 'Server Offline'}</span>
             </div>
           )}
         </div>
       </header>
 
       <main className="main-content">
-        {/* Notification Banner */}
         {notification && (
           <div className={`notification-banner ${notification.type}`}>
             <span>{notification.message}</span>
@@ -285,9 +244,6 @@ export default function App() {
           </div>
         )}
 
-        {/* ==================================================================
-            SCREEN 1: ORDER INPUT FORM
-            ================================================================== */}
         {currentScreen === 'form' && (
           <section className="screen-card">
             <div className="screen-header">
@@ -306,7 +262,6 @@ export default function App() {
             </div>
 
             <form onSubmit={handleFormSubmit} noValidate>
-              {/* Section 1: Personal Info */}
               <div className="form-section">
                 <div className="section-title">
                   <span className="step-num">1</span>
@@ -407,7 +362,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Section 2: Purchased Items */}
               <div className="form-section">
                 <div className="section-title-between">
                   <div className="section-title">
@@ -487,7 +441,6 @@ export default function App() {
                   </table>
                 </div>
 
-                {/* Live Frontend Summary */}
                 <div className="live-summary-bar">
                   <div className="summary-stat">
                     <span className="stat-label">Total Items:</span>
@@ -500,7 +453,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Submit Button */}
               <div className="form-actions">
                 <button type="submit" disabled={isLoading} className="btn btn-primary btn-lg">
                   {isLoading ? (
@@ -517,9 +469,6 @@ export default function App() {
           </section>
         )}
 
-        {/* ==================================================================
-            SCREEN 2: ORDER PREVIEW DETAIL WITH CALCULATED SUM
-            ================================================================== */}
         {currentScreen === 'preview' && previewData && (
           <section className="screen-card">
             <div className="preview-hero">
@@ -534,7 +483,6 @@ export default function App() {
             </div>
 
             <div className="preview-grid">
-              {/* Customer Info Card */}
               <div className="preview-card">
                 <div className="card-header">
                   <div className="card-icon">👤</div>
@@ -574,7 +522,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Order Detail & Calculated Sum Card */}
               <div className="preview-card">
                 <div className="card-header">
                   <div className="card-icon">📦</div>
@@ -595,7 +542,6 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Calculated Bill Breakdown */}
                 <div className="bill-calculation-box">
                   <div className="bill-row">
                     <span>Items Subtotal:</span>
@@ -623,7 +569,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Preview Action Buttons */}
             <div className="preview-actions">
               <button
                 type="button"
@@ -653,9 +598,6 @@ export default function App() {
           </section>
         )}
 
-        {/* ==================================================================
-            CONFIRMATION MODAL POPUP
-            ================================================================== */}
         {confirmedOrder && (
           <div className="modal-backdrop">
             <div className="modal-box">

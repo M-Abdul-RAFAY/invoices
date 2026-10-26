@@ -1,52 +1,42 @@
-/* ==========================================================================
-   DESIGN SYSTEM & CSS VARIABLES
-   ========================================================================== */
 :root {
-  /* Color Palette */
-  --primary: #4f46e5;         /* Vibrant Indigo */
+  --primary: #4f46e5;
   --primary-hover: #4338ca;
   --primary-light: #eef2ff;
-  --secondary: #0ea5e9;       /* Sky Blue */
-  --accent: #8b5cf6;          /* Purple */
+  --secondary: #0ea5e9;
+  --accent: #8b5cf6;
 
-  --success: #10b981;         /* Emerald */
+  --success: #10b981;
   --success-light: #d1fae5;
-  --warning: #f59e0b;         /* Amber */
-  --danger: #ef4444;          /* Red */
+  --warning: #f59e0b;
+  --danger: #ef4444;
   --danger-light: #fee2e2;
 
-  /* Neutrals */
   --bg-page: #f8fafc;
   --bg-surface: #ffffff;
   --border-subtle: #e2e8f0;
   --border-focus: #818cf8;
 
-  --text-main: #0f172a;       /* Slate 900 */
-  --text-muted: #64748b;      /* Slate 500 */
-  --text-light: #94a3b8;      /* Slate 400 */
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
 
-  /* Typography */
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
-  /* Elevation & Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
   --shadow-xl: 0 20px 30px -10px rgba(79, 70, 229, 0.15);
 
-  /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Transitions */
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Base Reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -75,9 +65,6 @@ body {
   gap: 24px;
 }
 
-/* ==========================================================================
-   HEADER COMPONENT
-   ========================================================================== */
 .app-header {
   background: var(--bg-surface);
   border-radius: var(--radius-lg);
@@ -125,7 +112,6 @@ body {
   color: var(--text-muted);
 }
 
-/* Status Indicator Pill */
 .status-indicator {
   display: inline-flex;
   align-items: center;
@@ -166,9 +152,6 @@ body {
   background-color: var(--danger);
 }
 
-/* ==========================================================================
-   NOTIFICATION BANNER
-   ========================================================================== */
 .notification-banner {
   padding: 14px 20px;
   border-radius: var(--radius-md);
@@ -192,9 +175,6 @@ body {
   border: 1px solid #a7f3d0;
 }
 
-/* ==========================================================================
-   SCREEN CARDS
-   ========================================================================== */
 .screen-card {
   background: var(--bg-surface);
   border-radius: var(--radius-xl);
@@ -233,9 +213,6 @@ body {
   gap: 10px;
 }
 
-/* ==========================================================================
-   FORM COMPONENTS & LAYOUT
-   ========================================================================== */
 .form-section {
   margin-bottom: 32px;
 }
@@ -320,9 +297,6 @@ body {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
-/* ==========================================================================
-   DYNAMIC ITEMS TABLE
-   ========================================================================== */
 .items-table-wrapper {
   overflow-x: auto;
   border: 1px solid var(--border-subtle);
@@ -399,7 +373,6 @@ body {
   background-color: var(--danger-light);
 }
 
-/* Live Summary Bar */
 .live-summary-bar {
   display: flex;
   justify-content: flex-end;
@@ -435,9 +408,6 @@ body {
   font-family: var(--font-heading);
 }
 
-/* ==========================================================================
-   BUTTONS
-   ========================================================================== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -532,9 +502,6 @@ body {
   display: inline-block;
 }
 
-/* ==========================================================================
-   SCREEN 2: PREVIEW & INVOICE DETAIL WITH SUM
-   ========================================================================== */
 .preview-hero {
   text-align: center;
   padding-bottom: 28px;
@@ -695,7 +662,6 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Bill Calculation Box */
 .bill-calculation-box {
   background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   border-radius: var(--radius-md);
@@ -746,9 +712,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* ==========================================================================
-   CONFIRMATION MODAL
-   ========================================================================== */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -810,7 +773,6 @@ body {
   width: 100%;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
