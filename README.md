@@ -1,6 +1,6 @@
-# 📦 Order & Billing Portal: Client + Server Architecture
+# 📦 Order & Billing Portal: Client (React + Vite) + Server (Express API)
 
-A complete, full-stack web application built for the **Order Management and Dynamic Bill Calculation Assignment**. This project features a modern responsive client interface, an Express API backend, clear REST routing, and comprehensive client-server communication.
+A complete full-stack web application built for the **Order Management and Dynamic Bill Calculation Assignment**. This project features a modern responsive **React + Vite** client interface, an **Express.js API** backend, modular REST routing, and comprehensive client-server communication.
 
 ---
 
@@ -8,65 +8,66 @@ A complete, full-stack web application built for the **Order Management and Dyna
 
 ```text
 Quiz/
-├── client/
-│   ├── index.html       # Screen 1 (Input Form) + Screen 2 (Order Preview & Sum) + In-App Study Guide
-│   ├── style.css        # Premium responsive styling (Indigo/Slate theme, glassmorphism, animations)
-│   └── app.js           # Frontend logic, dynamic item table, validation, and fetch() API communication
+├── client/                      # Frontend (React + Vite)
+│   ├── index.html               # Main HTML entry point (Google Fonts: Outfit & Plus Jakarta Sans)
+│   ├── vite.config.js           # Vite configuration (runs on port 3000)
+│   ├── package.json             # React 19 & Vite dependencies
+│   └── src/
+│       ├── main.jsx             # React DOM root render
+│       ├── App.jsx              # Main React component (State, Forms, Fetch API, Screen Toggling)
+│       └── index.css            # Modern styling (Slate/Indigo theme, glassmorphism, animations)
 │
-├── server/
-│   ├── package.json     # Node.js dependencies (express, cors) & scripts
-│   ├── server.js        # Express app initialization, middlewares, routing, and HTTP listener
+├── server/                      # Backend (Node.js & Express)
+│   ├── package.json             # Server dependencies (express, cors)
+│   ├── server.js                # Express app initialization, CORS, JSON middleware, port listener
 │   ├── routes/
-│   │   └── orderRoutes.js # REST API route definitions (GET /health, POST /preview, POST /submit)
+│   │   └── orderRoutes.js       # API routes: GET /health, POST /preview, POST /submit
 │   └── controllers/
-│       └── orderController.js # Business logic: validations, item iteration, and bill sum calculation
+│       └── orderController.js   # Validation, item calculations, 5% tax, shipping, and grand sum
 │
-└── README.md            # Documentation, CLI commands, and line-by-line classroom exam study guide
+└── README.md                    # Project documentation & classroom study guide
 ```
 
 ---
 
 ## 💻 CLI Commands (How to Run)
 
-### 1. Backend Server Setup & Start
+To run the project, you need **two terminal tabs**:
 
-Open your terminal or command prompt:
+### 1. Backend Server (Express API)
 
 ```bash
 # Navigate to the server folder
 cd server
 
-# Install dependencies (only needed the first time)
+# Install dependencies (only required the first time)
 npm install
 
-# Option A: Start production server
+# Start the server (Runs on port 5000)
 npm start
-
-# Option B: Start development server with auto-reload
-npm run dev
+# OR using nodemon for automatic reload:
+nodemon server.js
 ```
 
-The server will start listening at:
-> `http://localhost:5000`  
-> Health check: `http://localhost:5000/api/orders/health`
+> **API Base URL:** `http://localhost:5000`  
+> **Health Check Endpoint:** `http://localhost:5000/api/orders/health`
 
 ---
 
-### 2. Frontend Client Setup & Run
+### 2. Frontend Client (React + Vite)
 
-The client is pure Vanilla HTML, CSS, and JavaScript. You can run it in two ways:
-
-#### Option A: Using a local web server (Recommended)
 ```bash
-# In the project root or client folder:
-npx serve client
-# OR
-npx http-server client -p 3000
-```
-Then visit `http://localhost:3000` in your web browser.
+# Navigate to the client folder (in a new terminal tab)
+cd client
 
-#### Option B: Direct Browser Execution
-Simply double-click `client/index.html` to open it in Google Chrome, Microsoft Edge, or Firefox. Because CORS is enabled on the server, API calls work seamlessly.
+# Install dependencies (only required the first time)
+npm install
+
+# Start the Vite development server (Runs on port 3000)
+npm run dev
+```
+
+> **Frontend Application:** `http://localhost:3000`
 
 ---
 
@@ -75,48 +76,48 @@ Simply double-click `client/index.html` to open it in Google Chrome, Microsoft E
 | Method | Endpoint | Description | Request Body | Response Status |
 | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/api/orders/health` | Diagnostic health check | *None* | `200 OK` |
-| `POST` | `/api/orders/preview` | Validates data & calculates bill sum | `{ personalInfo, items }` | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/orders/submit` | Confirms order and generates Order ID | `{ previewId, personalInfo, items, summary }` | `201 Created` / `400 Bad Request` |
+| `POST` | `/api/orders/preview` | Validates inputs & calculates order bill sum | `{ personalInfo, items }` | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/orders/submit` | Confirms final order & generates Order ID | `{ previewId, personalInfo, items, summary }` | `201 Created` / `400 Bad Request` |
 
-### Sample `POST /api/orders/preview` Payload:
+### Sample `POST /api/orders/preview` Request Payload:
 ```json
 {
   "personalInfo": {
     "fullName": "Abdul Rafay",
     "email": "rafay@example.com",
     "phone": "+92 300 1234567",
-    "address": "House #14, Street 9, Sector F-7/2",
-    "city": "Islamabad",
     "paymentMethod": "Credit / Debit Card",
-    "notes": "Fragile items, deliver afternoon"
+    "address": "Apartment 4B, Blue Area Commercial Ave",
+    "city": "Islamabad",
+    "notes": "Please deliver after 2:00 PM."
   },
   "items": [
-    { "name": "Mechanical Keyboard", "price": 79.99, "quantity": 1 },
-    { "name": "Wireless Mouse", "price": 29.99, "quantity": 2 }
+    { "name": "Mechanical RGB Keyboard", "price": 79.99, "quantity": 1 },
+    { "name": "Wireless Gaming Mouse", "price": 34.50, "quantity": 2 }
   ]
 }
 ```
 
-### Sample Response:
+### Sample Response (`200 OK`):
 ```json
 {
   "success": true,
   "message": "Order preview calculated successfully",
   "data": {
     "previewId": "PREV-657885",
-    "orderDate": "10/26/2026, 9:22:15 AM",
+    "orderDate": "10/26/2026, 12:45:10 PM",
     "personalInfo": { ... },
     "items": [
-      { "id": 1, "name": "Mechanical Keyboard", "price": 79.99, "quantity": 1, "total": 79.99 },
-      { "id": 2, "name": "Wireless Mouse", "price": 29.99, "quantity": 2, "total": 59.98 }
+      { "id": 1, "name": "Mechanical RGB Keyboard", "price": 79.99, "quantity": 1, "total": 79.99 },
+      { "id": 2, "name": "Wireless Gaming Mouse", "price": 34.50, "quantity": 2, "total": 69.00 }
     ],
     "summary": {
       "itemCount": 3,
-      "subtotal": 139.97,
+      "subtotal": 148.99,
       "taxRate": "5%",
-      "taxAmount": 7.00,
+      "taxAmount": 7.45,
       "shippingFee": 0.00,
-      "totalBillAmount": 146.97
+      "totalBillAmount": 156.44
     }
   }
 }
@@ -124,143 +125,85 @@ Simply double-click `client/index.html` to open it in Google Chrome, Microsoft E
 
 ---
 
-## 🎓 15% COURSE MARKS: Client-Server Communication Explained
+## 🎓 15% COURSE MARKS: How Client Communicates with Server (Frontend with API)
 
-This section details how your **Frontend Client communicates with the Backend Server API**, from the moment a user clicks **Submit** to the moment the **Order Preview Screen** appears.
+Below is the detailed flow explaining how the **React Frontend** communicates with the **Express Backend API**:
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User
-    participant Client as Frontend (app.js)
-    participant DOM as Browser DOM
+    participant React as React App (App.jsx)
     participant Server as Express Server (server.js)
-    participant Controller as Order Controller
+    participant Controller as Order Controller (orderController.js)
 
-    User->>DOM: Clicks "Send to Server & View Preview"
-    DOM->>Client: Triggers "submit" event on orderForm
-    Note over Client: 1. e.preventDefault() prevents page refresh<br/>2. Gathers inputs & items into JS Object<br/>3. JSON.stringify(payload) converts to string
-    Client->>Server: HTTP POST /api/orders/preview (Content-Type: application/json)
-    Note over Server: 4. cors() verifies origin<br/>5. express.json() parses body into req.body
+    User->>React: Fills form & clicks "Send to Server & View Preview"
+    Note over React: 1. e.preventDefault() prevents page refresh<br/>2. Gathers React state (personalInfo + items)<br/>3. JSON.stringify(payload) converts to string
+    React->>Server: HTTP POST /api/orders/preview (Headers: Content-Type: application/json)
+    Note over Server: 4. cors() permits cross-origin request<br/>5. express.json() parses body into req.body
     Server->>Controller: calculateOrderPreview(req, res)
-    Note over Controller: 6. Validates name, email, phone, items<br/>7. Calculates (price × qty) & Subtotal<br/>8. Computes Tax (5%) + Shipping + Total Sum
-    Controller-->>Server: JSON Object with calculated sum
-    Server-->>Client: HTTP 200 OK Response (JSON stream)
-    Note over Client: 9. await response.json() parses data<br/>10. Hides Form Screen, reveals Preview Screen<br/>11. Injects Customer Info & Items with Sum
-    Client->>User: Displays Screen 2 with full Order Preview & Bill Sum!
+    Note over Controller: 6. Validates required fields & items<br/>7. Calculates (price × qty) & Subtotal<br/>8. Computes Tax (5%) + Shipping + Total Sum
+    Controller-->>Server: Formats JSON response
+    Server-->>React: HTTP 200 OK Response (JSON stream)
+    Note over React: 9. await response.json() parses data<br/>10. setPreviewData(result.data)<br/>11. setCurrentScreen('preview')
+    React->>User: Displays Screen 2 with full Customer Info & Order Details with Sum!
 ```
 
-### Detailed Breakdown of the 5 Steps:
+### Detailed Breakdown of the 5 Sequential Steps:
 
-1. **Event Interception & Preventing Default Behavior:**
-   - In `client/app.js`, `orderForm.addEventListener('submit', handleFormSubmit)` intercepts the submission.
-   - `e.preventDefault()` halts the default HTML form behavior (which would otherwise cause a full page refresh and lose all JavaScript state).
+1. **Event Interception (`e.preventDefault()`):**
+   In `client/src/App.jsx`, when the user clicks the submit button, the `onSubmit` event triggers `handleFormSubmit(e)`. `e.preventDefault()` stops the default browser behavior of submitting a form (which would cause a full page refresh and lose React's state).
 
-2. **Data Packaging (Serialization):**
-   - The client queries the DOM to read the input fields: `fullName`, `email`, `phone`, `address`, `paymentMethod`, and all dynamic item rows (`name`, `price`, `quantity`).
-   - It packages this into a clean JavaScript object: `{ personalInfo: {...}, items: [...] }`.
-   - `JSON.stringify(payload)` converts the JavaScript object into a standardized JSON string representation suitable for network transmission.
+2. **Data Packaging & Serialization (`JSON.stringify`):**
+   React extracts data directly from its component state (`personalInfo` and `items`). It formats the payload into a JavaScript object:
+   ```javascript
+   const payload = {
+     personalInfo,
+     items: formattedItems
+   };
+   ```
+   `JSON.stringify(payload)` converts the JavaScript object into a standardized JSON string suitable for transmission over HTTP.
 
 3. **HTTP Dispatch via `fetch()`:**
-   - The browser dispatches an asynchronous network request:
-     ```javascript
-     const response = await fetch('http://localhost:5000/api/orders/preview', {
-         method: 'POST',
-         headers: {
-             'Content-Type': 'application/json'
-         },
-         body: JSON.stringify(payload)
-     });
-     ```
-   - **`method: 'POST'`**: Informs the server that the client is transmitting a new resource/payload for processing.
-   - **`headers: { 'Content-Type': 'application/json' }`**: Crucial MIME type header telling Express how to decode the payload.
-   - **`body`**: The serialized JSON data payload.
+   The browser initiates an asynchronous network call:
+   ```javascript
+   const response = await fetch('http://localhost:5000/api/orders/preview', {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json'
+     },
+     body: JSON.stringify(payload)
+   });
+   ```
+   - **`method: 'POST'`**: Tells the server we are sending new data to process.
+   - **`headers: { 'Content-Type': 'application/json' }`**: Specifies that the payload is formatted as JSON.
+   - **`body`**: Contains the JSON string.
 
-4. **Server Middleware, Routing, & Computation:**
-   - `cors()`: Cross-Origin Resource Sharing middleware ensures requests from different origins (e.g. `localhost:3000` to `localhost:5000`) are accepted.
-   - `express.json()`: Middleware that intercepts incoming HTTP packets with `Content-Type: application/json`, parses the string stream, and attaches it as a native JavaScript object to `req.body`.
-   - `orderRoutes.js`: Matches the path `/api/orders/preview` and invokes `calculateOrderPreview`.
-   - `orderController.js`: Computes:
-     $$\text{Item Total} = \text{Price} \times \text{Quantity}$$
-     $$\text{Subtotal} = \sum \text{Item Totals}$$
-     $$\text{Sales Tax} = \text{Subtotal} \times 0.05$$
-     $$\text{Total Bill Amount} = \text{Subtotal} + \text{Sales Tax} + \text{Shipping Fee}$$
-   - Returns `res.status(200).json({ success: true, data: ... })`.
+4. **Server Middleware, Routing & Calculation:**
+   - **`app.use(cors())`**: Ensures that requests from port `3000` (React) are accepted by port `5000` (Express).
+   - **`app.use(express.json())`**: Parses incoming JSON request bodies and makes them accessible as `req.body`.
+   - **`orderRoutes.js`**: Matches the `/preview` route and invokes `calculateOrderPreview`.
+   - **`orderController.js`**: Validates fields, calculates each item's total ($price \times quantity$), computes subtotal, 5% sales tax, shipping fee, and grand total sum.
+   - Returns: `res.status(200).json({ success: true, data: ... })`.
 
-5. **Client Response Handling & DOM Transition:**
-   - The client awaits the response: `const result = await response.json()`.
-   - Checks `response.ok` (HTTP 200).
-   - Passes `result.data` to `renderPreviewScreen(result.data)`.
-   - Toggles CSS classes: removes `active-screen` from the form and adds `active-screen` to the preview screen.
+5. **Client Response Handling & View Switching:**
+   - The React client parses the incoming response using `const result = await response.json()`.
+   - It updates state via `setPreviewData(result.data)`.
+   - It transitions the view by calling `setCurrentScreen('preview')`, which causes React to render the second screen with customer details and the calculated bill sum.
 
 ---
 
-## ⚡ Classroom Test Survival Guide: "Lines Your Teacher Might Remove"
+## 🚨 Classroom Test Cheatsheet: "Lines Your Teacher Might Remove"
 
-Your professor noted they will **remove random lines of code and ask you to identify and rewrite them on the spot**. Here are the critical lines and their symptoms:
+If your professor removes lines of code in class to test your understanding, use this table to quickly identify and replace them:
 
-### 1. `event.preventDefault();` (in `client/app.js`)
-* **Symptom if removed**: As soon as you click submit, the page immediately flickers and refreshes! The URL bar may append `?fullName=...`, and the preview screen never displays.
-* **Why**: HTML `<form>` submissions trigger a browser GET/POST page reload by default. `event.preventDefault()` stops this.
-* **Fix**: Put `event.preventDefault();` as the very first line of `handleFormSubmit(event)`.
-
----
-
-### 2. `app.use(express.json());` (in `server/server.js`)
-* **Symptom if removed**: The server crashes with `TypeError: Cannot destructure property 'personalInfo' of 'req.body' as it is undefined`, or returns `400 Bad Request`.
-* **Why**: Node's raw HTTP server receives requests as raw byte streams. Without `express.json()`, Express does not parse the incoming JSON, leaving `req.body` as `undefined`.
-* **Fix**: Add `app.use(express.json());` before route declarations in `server.js`.
-
----
-
-### 3. `app.use(cors());` (in `server/server.js`)
-* **Symptom if removed**: In the browser console, you will see a red error:  
-  `Access to fetch at 'http://localhost:5000/api/orders/preview' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
-* **Why**: Modern browsers enforce the Same-Origin Policy. Since client (port 3000) and server (port 5000) have different origins, the server must explicitly approve it via CORS headers.
-* **Fix**: Add `const cors = require('cors');` and `app.use(cors());` in `server.js`.
-
----
-
-### 4. `'Content-Type': 'application/json'` (in `client/app.js`)
-* **Symptom if removed**: Even though `app.use(express.json())` is present on the server, `req.body` arrives as `{}` (empty object), because the server does not know how to parse the payload without the header.
-* **Why**: The server's JSON parser checks the `Content-Type` header to determine if it should parse the incoming body.
-* **Fix**: Ensure the `headers` property inside `fetch()` contains `'Content-Type': 'application/json'`.
-
----
-
-### 5. `JSON.stringify(payload)` (in `client/app.js`)
-* **Symptom if removed (e.g. passing `body: payload`)**: The browser sends `[object Object]` across the wire instead of JSON, resulting in `SyntaxError: Unexpected token o in JSON at position 1` on the server.
-* **Why**: HTTP request bodies must be strings, buffers, or streams. You cannot transmit raw JavaScript memory objects directly over TCP.
-* **Fix**: Wrap your payload with `JSON.stringify(...)`.
-
----
-
-### 6. `await response.json();` (in `client/app.js`)
-* **Symptom if removed or forgotten `await`**: `result` becomes `Promise { <pending> }`. Attempting to read `result.data` will throw `TypeError: Cannot read properties of undefined`.
-* **Why**: `response.json()` is an asynchronous function that streams and parses the HTTP body. It returns a Promise that must be awaited.
-* **Fix**: Always write `const result = await response.json();`.
-
----
-
-### 7. `app.use('/api/orders', orderRoutes);` (in `server/server.js`)
-* **Symptom if removed**: Calling `http://localhost:5000/api/orders/preview` returns `404 Not Found` with message `Route /api/orders/preview not found`.
-* **Why**: The routes exist inside `orderRoutes.js`, but they must be mounted into the main Express application.
-* **Fix**: Ensure `app.use('/api/orders', orderRoutes);` is present.
-
----
-
-### 8. `module.exports = router;` (in `server/routes/orderRoutes.js`)
-* **Symptom if removed**: Server fails to start with `TypeError: router.use() requires a middleware function but got a Object`.
-* **Why**: Node.js CommonJS modules must explicitly export variables using `module.exports` so that `require('./routes/orderRoutes')` receives the configured router.
-* **Fix**: Add `module.exports = router;` at the bottom of `orderRoutes.js`.
-
----
-
-## 🎨 Design Features Included
-- **Dynamic Items Management**: Add and remove items on the fly with live subtotal calculation.
-- **Form Screen**: Structured sections for personal information, delivery details, and items.
-- **Preview Screen**: Clean invoice layout with reference ID, personal info card, purchased items breakdown, and calculated bill sum.
-- **Real-Time Backend Status Pill**: Detects if port 5000 is active or offline on load.
-- **Autofill Demo Button**: Fills realistic test data in 1 click for in-class presentations.
-- **Print Receipt**: Triggers custom clean CSS print layout for invoices.
-- **Confirmation Modal**: Confirms official order submission with server-generated order ID.
+| Removed Line | File Location | Symptoms & Errors | How to Fix It |
+| :--- | :--- | :--- | :--- |
+| **`e.preventDefault();`** | `client/src/App.jsx` (top of `handleFormSubmit`) | Page immediately flickers and refreshes on submit; URL bar appends query params like `?fullName=...`; preview screen never appears. | Place `e.preventDefault();` at the very beginning of `handleFormSubmit(e)`. |
+| **`app.use(express.json());`** | `server/server.js` | Server crashes with: `TypeError: Cannot destructure property 'personalInfo' of req.body as it is undefined`. | Add `app.use(express.json());` before route definitions in `server.js`. |
+| **`app.use(cors());`** | `server/server.js` | Browser console throws a red error: `Access to fetch blocked by CORS policy: No 'Access-Control-Allow-Origin' header present`. | Add `const cors = require('cors');` and `app.use(cors());` in `server.js`. |
+| **`'Content-Type': 'application/json'`** | `client/src/App.jsx` inside `fetch()` headers | `req.body` arrives on the server as an empty `{}` object even though data was sent. | Ensure `headers: { 'Content-Type': 'application/json' }` is included in `fetch()` options. |
+| **`JSON.stringify(payload)`** | `client/src/App.jsx` inside `fetch()` body | Server throws `SyntaxError: Unexpected token o in JSON at position 1` because browser sent `[object Object]`. | Wrap the payload in `body: JSON.stringify(payload)`. |
+| **`await response.json();`** | `client/src/App.jsx` | `result` is a `Promise { <pending> }` instead of the data object, causing `TypeError: Cannot read properties of undefined`. | Ensure you use `const result = await response.json();`. |
+| **`app.use('/api/orders', orderRoutes);`** | `server/server.js` | Client receives `404 Not Found` with message `Route /api/orders/preview not found on this server`. | Mount the router using `app.use('/api/orders', orderRoutes);` in `server.js`. |
+| **`module.exports = router;`** | `server/routes/orderRoutes.js` | Server fails to start with: `TypeError: router.use() requires a middleware function`. | Add `module.exports = router;` at the bottom of `orderRoutes.js`. |
